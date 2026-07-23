@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Campaign Manager Dashboard</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Geist:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e1e8ff",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#00687b",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#b2c5ff",
+                        "outline": "#737685",
+                        "surface-container-low": "#f1f3ff",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#48d7f9",
+                        "tertiary-fixed-dim": "#c9bfff",
+                        "on-background": "#051a3e",
+                        "inverse-surface": "#1d3054",
+                        "primary-container": "#0052cc",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#d5ccff",
+                        "tertiary-container": "#5b49b5",
+                        "surface-dim": "#ccdaff",
+                        "on-surface-variant": "#434654",
+                        "surface-container-highest": "#d8e2ff",
+                        "surface-tint": "#0c56d0",
+                        "primary-fixed": "#dae2ff",
+                        "secondary-container": "#50dcff",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#432f9c",
+                        "secondary-fixed": "#afecff",
+                        "on-secondary-fixed-variant": "#004e5d",
+                        "surface-bright": "#faf9ff",
+                        "background": "#faf9ff",
+                        "tertiary-fixed": "#e5deff",
+                        "surface-container": "#e9edff",
+                        "outline-variant": "#c3c6d6",
+                        "surface": "#faf9ff",
+                        "on-surface": "#051a3e",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#001848",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#edf0ff",
+                        "on-secondary-container": "#005f71",
+                        "primary": "#003d9b",
+                        "on-secondary-fixed": "#001f27",
+                        "on-tertiary-fixed": "#1a0063",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#4633a0",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "surface-variant": "#d8e2ff",
+                        "on-primary-container": "#c4d2ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "container-margin-desktop": "32px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "container-margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Hanken Grotesk"],
+                        "label-md": ["Geist"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "label-sm": ["Geist"],
+                        "body-md": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-sm": ["10px", {"lineHeight": "12px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tap-highlight-transparent {
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #F4F5F7; /* Level 0 Background per style guidance */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface w-full top-0 sticky z-40 border-b border-outline-variant dark:border-outline flex items-center justify-between px-container-margin-mobile h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="text-primary dark:text-primary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-100 p-2 rounded-full">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-primary-fixed-dim">Campaign Manager</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant active:scale-95 duration-100 transition-transform">
+<img class="w-full h-full object-cover" data-alt="A professional campaign manager's studio portrait. The lighting is crisp and high-key, emphasizing a modern corporate aesthetic. The subject is a confident operator in a minimalist professional attire against a soft-focus background of a high-tech data visualization center. The color palette is composed of pristine whites and deep blues, reflecting the Campaign Manager's systematic efficiency." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6iaz4JHQ7pCQHq3onGjT2-gDMPUdqxo3AyIFD70cTOAyd1i4lTTOHF1oYbGGA1nbhEs2WIc3EZnSyY55BgpsD0Bomn2QKQOYd2vccSmOcDYUzir4oCrpHrOSy2CrWt3dMPeJgTqgHZDf9ToV-QYYKZX0RLwzHZl8BBFPsUG2JwjWkimXysZNDOAvaWsN0bmm5RD05qov--Kre8IGIAu-PSLrXUOUvk95O11j-IZRNR8posZR_pM1-krr2CpAWHOVSNTpAxOu4lhA"/>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pb-32 px-container-margin-mobile pt-6 max-w-screen-md mx-auto">
+<!-- Quick Stats Section -->
+<section class="mb-8">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Quick Stats</h2>
+<div class="grid grid-cols-2 gap-gutter">
+<!-- Total Reach Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-2 mb-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">groups</span>
+<span class="font-label-md text-label-md">Total Reach</span>
+</div>
+<div class="font-headline-md text-headline-md text-primary">1.2M</div>
+<div class="flex items-center gap-1 mt-1 text-secondary text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span>12.5%</span>
+</div>
+</div>
+<!-- Avg. Conversion Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center gap-2 mb-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">ads_click</span>
+<span class="font-label-md text-label-md">Avg. Conversion</span>
+</div>
+<div class="font-headline-md text-headline-md text-primary">4.82%</div>
+<div class="flex items-center gap-1 mt-1 text-error text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px]">trending_down</span>
+<span>0.4%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Active Campaigns Section -->
+<section class="mb-8">
+<div class="flex justify-between items-end mb-4">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Active Campaigns</h2>
+<button class="text-primary font-label-md text-label-md hover:underline">View All</button>
+</div>
+<div class="space-y-4">
+<!-- Campaign Item 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex gap-4 items-center hover:bg-surface-container-low transition-colors duration-200">
+<div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">rocket_launch</span>
+</div>
+<div class="flex-1">
+<h3 class="font-headline-sm text-[16px] text-on-surface">Summer Solstice Blast</h3>
+<p class="font-body-md text-[12px] text-on-surface-variant">Last updated 2h ago</p>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 font-label-sm text-[10px] uppercase tracking-wider">Running</span>
+<span class="font-label-md text-on-surface">84k impressions</span>
+</div>
+</div>
+<!-- Campaign Item 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex gap-4 items-center hover:bg-surface-container-low transition-colors duration-200">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">campaign</span>
+</div>
+<div class="flex-1">
+<h3 class="font-headline-sm text-[16px] text-on-surface">Q3 Product Awareness</h3>
+<p class="font-body-md text-[12px] text-on-surface-variant">Scheduled for Sept 15</p>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="px-3 py-1 rounded-full bg-amber-100 text-amber-700 font-label-sm text-[10px] uppercase tracking-wider">Paused</span>
+<span class="font-label-md text-on-surface">0 impressions</span>
+</div>
+</div>
+<!-- Campaign Item 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex gap-4 items-center hover:bg-surface-container-low transition-colors duration-200">
+<div class="w-12 h-12 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined">hub</span>
+</div>
+<div class="flex-1">
+<h3 class="font-headline-sm text-[16px] text-on-surface">Referral Reward Program</h3>
+<p class="font-body-md text-[12px] text-on-surface-variant">Active since Monday</p>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 font-label-sm text-[10px] uppercase tracking-wider">Running</span>
+<span class="font-label-md text-on-surface">12k impressions</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Asymmetric Detail Card (Visual Interest) -->
+<section class="mb-8 relative overflow-hidden bg-primary text-white rounded-2xl p-6 shadow-lg">
+<div class="relative z-10">
+<h3 class="font-headline-md text-headline-md mb-2">Optimize Performance</h3>
+<p class="font-body-md text-primary-fixed-dim max-w-[200px] mb-4">Your conversion rate is 15% higher than last month. Check new recommendations.</p>
+<button class="bg-white text-primary px-4 py-2 rounded-lg font-label-md hover:bg-opacity-90 transition-all">Explore Insights</button>
+</div>
+<div class="absolute -right-8 -bottom-8 opacity-20">
+<span class="material-symbols-outlined text-[140px]" style="font-variation-settings: 'FILL' 1;">analytics</span>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center shadow-xl active:scale-90 transition-all duration-150 z-50 hover:bg-primary-container/90">
+<span class="material-symbols-outlined text-[32px]">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface-container dark:bg-surface-container border-t border-outline-variant flex justify-around items-center h-20 px-2 pb-safe w-full">
+<!-- Overview (Active) -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 tap-highlight-transparent transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-sm text-label-sm">Overview</span>
+</a>
+<!-- Uploads -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim tap-highlight-transparent transition-all" href="#">
+<span class="material-symbols-outlined">cloud_upload</span>
+<span class="font-label-sm text-label-sm">Uploads</span>
+</a>
+<!-- Templates -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim tap-highlight-transparent transition-all" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-sm text-label-sm">Templates</span>
+</a>
+<!-- Review -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim tap-highlight-transparent transition-all" href="#">
+<span class="material-symbols-outlined">rocket_launch</span>
+<span class="font-label-sm text-label-sm">Review</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for tap feedback
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('click', function(e) {
+                const ripple = document.createElement('div');
+                ripple.classList.add('ripple');
+                // Basic implementation of ripple could be added here if needed, 
+                // but native Tailwind active:scale handles basic feedback well.
+            });
+        });
+    </script>
+</body></html>
