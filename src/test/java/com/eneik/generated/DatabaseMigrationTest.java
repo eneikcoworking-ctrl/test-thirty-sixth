@@ -18,6 +18,12 @@ public class DatabaseMigrationTest {
 
     @Test
     public void testDatabaseMigrationSuccessful() {
+        // Clear tables from any persistent run to ensure test independence
+        assertDoesNotThrow(() -> {
+            jdbcTemplate.execute("DELETE FROM messages");
+            jdbcTemplate.execute("DELETE FROM dialogs");
+        });
+
         // Test that tables were created successfully and are queryable
         assertDoesNotThrow(() -> {
             jdbcTemplate.execute("SELECT * FROM dialogs");
