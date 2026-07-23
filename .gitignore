@@ -7,3 +7,10 @@ target/
 # Local databases & run data
 data/
 *.db
+
+# Node build and dependency files
+node_modules/
+dist/
+.vite/
+.svelte-kit/
+*.log
