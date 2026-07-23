@@ -1,0 +1,297 @@
+openapi: 3.0.3
+info:
+  title: CRM Inbox API - LeadGen Bot
+  description: |
+    API contract for the CRM Inbox module of the LeadGen Bot.
+    Enables operators to list conversations, view dialogue histories, send manual messages,
+    and override/hijack the AI dialogue state (manual takeover).
+  version: 1.0.0
+servers:
+  - url: /api
+    description: Local API gateway
+paths:
+  /dialogs:
+    get:
+      summary: Retrieve list of dialogs
+      description: Returns a list of dialogs (chats) between warm accounts / bots and leads.
+      parameters:
+        - name: isAiActive
+          in: query
+          description: Filter dialogs by whether the AI agent is active or if human takeover is in place.
+          required: false
+          schema:
+            type: boolean
+        - name: page
+          in: query
+          description: Page number for pagination (0-based)
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          description: Number of records per page
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: A list of dialogs successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Dialog'
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  last:
+                    type: boolean
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "500":
+          $ref: '#/components/responses/InternalError'
+
+  /dialogs/{dialogId}/messages:
+    get:
+      summary: Retrieve messages for a specific dialog
+      description: Fetches message history of the dialogue.
+      parameters:
+        - name: dialogId
+          in: path
+          description: Unique database identifier of the dialog
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          in: query
+          description: Max number of messages to return
+          required: false
+          schema:
+            type: integer
+            default: 50
+      responses:
+        "200":
+          description: Message list successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      summary: Send manual operator message
+      description: Sends a text message to the lead in the specified dialog, acting as a human operator.
+      parameters:
+        - name: dialogId
+          in: path
+          description: Unique database identifier of the dialog
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Text content of the operator message
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+                  description: Text to send to the Telegram chat
+                  minLength: 1
+      responses:
+        "201":
+          description: Operator message sent successfully and stored in DB.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+
+  /dialogs/{dialogId}/hijack:
+    post:
+      summary: Hijack dialogue / Manual AI state override
+      description: |
+        Allows a human operator to hijack the dialogue, disabling or re-enabling the AI agent's auto-responses.
+        When isAiActive is set to false, the dialogue is in human takeover mode.
+      parameters:
+        - name: dialogId
+          in: path
+          description: Unique database identifier of the dialog
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Request structure to override the AI dialogue state
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HijackPayload'
+      responses:
+        "200":
+          description: Dialogue AI status updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dialog'
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "500":
+          $ref: '#/components/responses/InternalError'
+
+components:
+  schemas:
+    Dialog:
+      type: object
+      required:
+        - id
+        - telegramChatId
+        - isAiActive
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Primary key from the dialogs table
+        telegramChatId:
+          type: integer
+          format: int64
+          description: The Telegram chat id with the lead
+        leadUsername:
+          type: string
+          nullable: true
+          description: Telegram @username of the lead
+        leadPhone:
+          type: string
+          nullable: true
+          description: Phone number of the lead
+        isAiActive:
+          type: boolean
+          description: Indicates whether the AI is currently handling automated responses or if a human hijacked the conversation.
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the dialog was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of the last update to the dialog metadata/status
+    Message:
+      type: object
+      required:
+        - id
+        - dialogId
+        - text
+        - senderType
+        - sentAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Primary key from the messages table
+        dialogId:
+          type: integer
+          format: int64
+          description: The corresponding dialog ID
+        text:
+          type: string
+          description: Text content of the message
+        senderType:
+          type: string
+          enum: [AI, HUMAN, LEAD]
+          description: |
+            Type of the sender of this message:
+            * `AI` - Message sent automatically by LLM/bot agent.
+            * `HUMAN` - Message sent manually by human operator takeover.
+            * `LEAD` - Incoming message sent by the target lead.
+        sentAt:
+          type: string
+          format: date-time
+          description: Timestamp when the message was sent or received
+    HijackPayload:
+      type: object
+      required:
+        - isAiActive
+      properties:
+        isAiActive:
+          type: boolean
+          description: Set to false to suspend AI auto-replies and allow manual operator handling. Set to true to re-enable AI.
+        reason:
+          type: string
+          description: Optional explanation/note for overriding the AI state.
+          maxLength: 500
+    ErrorResponse:
+      type: object
+      required:
+        - timestamp
+        - status
+        - error
+        - path
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Time when the error occurred
+        status:
+          type: integer
+          description: HTTP status code
+        error:
+          type: string
+          description: HTTP error message
+        message:
+          type: string
+          description: Detailed, human-readable reason/cause of error
+        path:
+          type: string
+          description: The API route requested when the error occurred
+
+  responses:
+    BadRequest:
+      description: Invalid payload, formatting issues, or validation errors.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource (e.g., dialog or message) not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalError:
+      description: Server experienced an unexpected issue.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
