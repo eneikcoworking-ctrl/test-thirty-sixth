@@ -1,0 +1,304 @@
+{
+  "epics": [
+    {
+      "existingEpicId": null,
+      "title": "Telegram Account Management & Anti-Ban Engine",
+      "jtbd": "When a campaign operator prepares for outreach, I want to securely onboard, proxy-bind, and warm up Telegram accounts, so that the platform maintains a healthy pool of sender sessions without triggering bans.",
+      "kanoClass": "Must-Be",
+      "cynefinDomain": "complicated",
+      "sixSigmaMetric": "Reduce account ban rate to under 5% per week",
+      "tocConstraintRef": "Telegram API flood limits and anti-spam algorithms",
+      "sourceIndex": 0,
+      "requirements": [
+        "R1: Multi-Format Session Onboarding via OTP or .session/tdata file upload.",
+        "R2: Mandatory assignment of dedicated IPv4/IPv6 proxies per account.",
+        "R3: Real-time tracking of session health (Active, Block, Ban, Re-auth).",
+        "R4: Emulate human behavior via randomized pauses and typing status.",
+        "R5: Strict daily messaging rate limit per account.",
+        "R6: Automated background session warm-up actions.",
+        "R7: Filter ensuring only aged accounts are assigned to outreach.",
+        "R8: Apply non-linear delays to all actions to mimic human patterns."
+      ],
+      "coverageComplete": true,
+      "slices": [
+        {
+          "title": "TDLib and API Integration Spike",
+          "roleTag": "BARCAN-TAG-09",
+          "jtbd": "When implementing Telegram session onboarding for this epic, I want to establish a reliable bridge to TDLib, so that we can securely authenticate accounts and send status signals.",
+          "acceptanceCriteria": "Given the requirement to integrate with Telegram TDLib, When evaluating JNI vs microservice approaches, Then deliver a committed architecture decision markdown file documenting trade-offs.\nGiven the chosen approach, When prototyping session auth, Then commit a minimal script confirming successful login via API.",
+          "leanValue": "essential",
+          "cynefinDomain": "complex",
+          "tocConstraintRef": "Integration with native TDLib libraries",
+          "sixSigmaMetric": "Deliver 1 verified technical decision record with a working minimal auth script",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R4",
+            "R6"
+          ]
+        },
+        {
+          "title": "Account, Proxy, and Session Data Schema",
+          "roleTag": "BARCAN-TAG-08",
+          "jtbd": "When implementing account state tracking for this epic, I want to define the relational schema for TG_Accounts and Proxies, so that the system can query account health and limit status efficiently.",
+          "acceptanceCriteria": "Given the need to store account and proxy details, When designing the database schema, Then commit SQL migrations for TG_Accounts and Proxies with appropriate foreign keys.\nGiven the daily limits, When updating account state, Then ensure the schema supports rapid status updates without deadlocks.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Database schema migration pipeline",
+          "sixSigmaMetric": "0 production schema regressions",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R5",
+            "R7"
+          ]
+        },
+        {
+          "title": "Account Management API Contract",
+          "roleTag": "BARCAN-TAG-12",
+          "jtbd": "When implementing the account onboarding for this epic, I want to define the REST API endpoints and DTOs for uploading sessions and checking health, so that frontend and backend can build in parallel.",
+          "acceptanceCriteria": "Given frontend needs to upload session files, When defining the OpenAPI spec, Then define and commit the OpenAPI JSON/YAML spec file with a multipart upload endpoint.\nGiven the need to monitor health, When defining the status endpoint, Then ensure all four account statuses are typed in the response.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Frontend-backend integration blockers",
+          "sixSigmaMetric": "100% typed endpoint definitions in OpenAPI spec",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3"
+          ]
+        },
+        {
+          "title": "Account Session Core & Anti-Ban Limiters",
+          "roleTag": "BARCAN-TAG-02",
+          "jtbd": "When implementing the background processes for this epic, I want to build the session onboarding logic and rate limiters, so that the system natively maintains account health.",
+          "acceptanceCriteria": "Given an uploaded session file, When the backend processes it, Then commit the Java Spring Boot service classes handling authentication and proxy assignment.\nGiven a scheduled background action, When the warm-up task executes, Then the logic applies non-linear delays and updates the account's trust score.",
+          "leanValue": "essential",
+          "cynefinDomain": "complicated",
+          "tocConstraintRef": "Backend concurrent background workers",
+          "sixSigmaMetric": "Handle up to 100 concurrent account sessions without memory leaks",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "R5",
+            "R6",
+            "R7",
+            "R8"
+          ]
+        },
+        {
+          "title": "Account Dashboard & Onboarding UI",
+          "roleTag": "BARCAN-TAG-11",
+          "jtbd": "When implementing the operator UI for this epic, I want to create the dashboard to add sessions and view health status, so that operators can manage their sender pool.",
+          "acceptanceCriteria": "Given the account dashboard, When a user uploads a session file, Then commit the Svelte component files displaying an upload progress bar and success confirmation.\nGiven a list of accounts, When their status changes in the backend, Then the UI reflects the new color-coded status instantly.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Client-side state management for live statuses",
+          "sixSigmaMetric": "Sub-100ms UI response time for status updates",
+          "hasUi": true,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3"
+          ]
+        }
+      ]
+    },
+    {
+      "existingEpicId": null,
+      "title": "Cold Outreach Campaign Engine",
+      "jtbd": "When a campaign operator executes outreach, I want to ingest lead lists, apply spintax personalization, and route messages through available accounts, so that prospects are contacted continuously.",
+      "kanoClass": "Performance",
+      "cynefinDomain": "complicated",
+      "sixSigmaMetric": "Achieve >20% increase in daily contact throughput without API limits",
+      "tocConstraintRef": "Outreach dispatch rate limiting",
+      "sourceIndex": 0,
+      "requirements": [
+        "R1: Ingest lead target lists via CSV, TXT files, or manual batch entry.",
+        "R2: Dynamic text randomization using Spintax syntax in templates.",
+        "R3: Use LLM to dynamically rephrase outreach offers based on lead metadata.",
+        "R4: Automatic session rotation failover upon reaching limits or FLOOD_WAIT errors."
+      ],
+      "coverageComplete": true,
+      "slices": [
+        {
+          "title": "Campaign & Lead Ingestion Schema",
+          "roleTag": "BARCAN-TAG-08",
+          "jtbd": "When implementing the campaign engine for this epic, I want to design the PostgreSQL tables for Campaigns and Leads, so that batch data and routing status are persisted reliably.",
+          "acceptanceCriteria": "Given the campaign requirements, When creating migrations, Then commit the SQL schema migration file for Campaigns, spintax configs, and Leads.\nGiven lead ingestion needs, When storing target leads, Then ensure there is an index on identifiers for fast deduplication.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Database write throughput during batch lead inserts",
+          "sixSigmaMetric": "Support batch insert of 100,000 leads in under 5 seconds",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R4"
+          ]
+        },
+        {
+          "title": "Campaign Management API Contract",
+          "roleTag": "BARCAN-TAG-12",
+          "jtbd": "When implementing the campaign UI for this epic, I want to define the endpoints for CSV upload and spintax template configuration, so that parallel frontend and backend development can begin.",
+          "acceptanceCriteria": "Given the need to create campaigns, When specifying the REST contract, Then commit the OpenAPI yaml contract file defining spintax schemas.\nGiven a CSV lead list, When defining the upload endpoint, Then provide a contract that returns batch parsing validation errors.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Client-Server data contract alignment",
+          "sixSigmaMetric": "0 breaking API changes during parallel implementation",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2"
+          ]
+        },
+        {
+          "title": "Campaign Routing & Spintax Engine",
+          "roleTag": "BARCAN-TAG-02",
+          "jtbd": "When implementing the outreach dispatcher for this epic, I want to parse CSVs, generate messages, and handle automatic session rotation, so that outbound messaging flows continuously.",
+          "acceptanceCriteria": "Given an active campaign, When dispatching messages, Then commit the Java routing service and Spintax parser class files that substitute dynamic fields.\nGiven a FLOOD_WAIT error, When encountered during sending, Then the system automatically rotates to the next available aged account.",
+          "leanValue": "essential",
+          "cynefinDomain": "complicated",
+          "tocConstraintRef": "Message dispatch queue throughput",
+          "sixSigmaMetric": "Achieve 99.9% successful message failovers on FLOOD_WAIT",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R4"
+          ]
+        },
+        {
+          "title": "Campaign Configuration & Ingestion UI",
+          "roleTag": "BARCAN-TAG-11",
+          "jtbd": "When implementing the campaign dashboard for this epic, I want to provide interfaces for CSV lead uploads and template editing, so that operators can easily launch new target lists.",
+          "acceptanceCriteria": "Given the campaign configuration page, When the user enters a Spintax template, Then commit the Svelte page component files providing a live preview.\nGiven a CSV file with lead data, When uploaded, Then the UI displays a data grid previewing the parsed contacts before final submission.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Large file upload handling in browser",
+          "sixSigmaMetric": "Process CSV parsing feedback in UI in under 2 seconds",
+          "hasUi": true,
+          "requirementRefs": [
+            "R1",
+            "R2"
+          ]
+        }
+      ]
+    },
+    {
+      "existingEpicId": null,
+      "title": "AI Dialogue Engine & Unified CRM Inbox",
+      "jtbd": "When a lead responds, I want an AI to continue the conversation until qualification or a stop-trigger, and provide a unified CRM inbox for human takeover, so that we maximize conversions without manual bottlenecking.",
+      "kanoClass": "Attractive",
+      "cynefinDomain": "complex",
+      "sixSigmaMetric": "Reduce human operator response time to qualified leads by 80%",
+      "tocConstraintRef": "Human operator capacity for managing simultaneous conversations",
+      "sourceIndex": 0,
+      "requirements": [
+        "R1: Background worker monitoring connected accounts for incoming responses.",
+        "R2: Persist conversation context and supply history to the LLM.",
+        "R3: Configurable system prompt template (persona, goals, FAQs).",
+        "R4: Detect intent flags and maximum turns as stop-triggers for the AI.",
+        "R5: Mark dialogue as Awaiting Human Intervention and halt automated outreach.",
+        "R6: Consolidated unified Svelte inbox displaying all incoming messages.",
+        "R7: Visual status color-coding for conversations (Active, Human Req, etc).",
+        "R8: Manual takeover control that immediately pauses AI upon operator reply."
+      ],
+      "coverageComplete": true,
+      "slices": [
+        {
+          "title": "Dialog Context & Message Schema",
+          "roleTag": "BARCAN-TAG-08",
+          "jtbd": "When implementing conversation tracking for this epic, I want to define the tables for Dialogs and Messages, so that the full conversation is available to the LLM and the CRM.",
+          "acceptanceCriteria": "Given the need to persist dialogs, When designing the tables, Then commit the SQL migration files for Dialogs and Messages with sender type references.\nGiven the human takeover feature, When storing conversation state, Then include a status flag indicating whether AI is active or human intervention is required.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Relational storage of unbounded conversation history",
+          "sixSigmaMetric": "Sub-50ms query time for retrieving a lead's last N dialogue turns",
+          "hasUi": false,
+          "requirementRefs": [
+            "R2",
+            "R5",
+            "R7"
+          ]
+        },
+        {
+          "title": "CRM Inbox API & WebSocket Contract",
+          "roleTag": "BARCAN-TAG-12",
+          "jtbd": "When implementing the live chat for this epic, I want to define the real-time contracts for inbound messages and status changes, so that the UI updates instantly.",
+          "acceptanceCriteria": "Given real-time CRM needs, When defining the communication contract, Then commit the API contract and WebSocket specification file for pushing messages.\nGiven the manual takeover action, When specifying the hijack endpoint, Then define a payload structure for overriding AI state.",
+          "leanValue": "essential",
+          "cynefinDomain": "complicated",
+          "tocConstraintRef": "Real-time state synchronization between server and client",
+          "sixSigmaMetric": "100% test coverage for the API contract spec",
+          "hasUi": false,
+          "requirementRefs": [
+            "R3",
+            "R6",
+            "R7",
+            "R8"
+          ]
+        },
+        {
+          "title": "LLM Dialogue & Stop-Trigger Engine",
+          "roleTag": "BARCAN-TAG-04",
+          "jtbd": "When implementing the AI agent for this epic, I want to integrate Spring AI with prompt evaluation and detect stop-triggers, so that the bot replies autonomously or hands off correctly.",
+          "acceptanceCriteria": "Given an incoming message, When the listener detects it, Then commit the Spring AI integration Java classes that fetch context and evaluate intent.\nGiven a lead explicitly asking to book a call, When the LLM evaluates the intent, Then the system marks the dialog as Awaiting Human Intervention and halts AI replies.",
+          "leanValue": "essential",
+          "cynefinDomain": "complex",
+          "tocConstraintRef": "LLM API latency and context window limits",
+          "sixSigmaMetric": "Keep AI decision loop (read, evaluate, generate) under 3 seconds on average",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "R5"
+          ]
+        },
+        {
+          "title": "Live Chat Controller & Manual Takeover",
+          "roleTag": "BARCAN-TAG-02",
+          "jtbd": "When implementing human intervention for this epic, I want to expose real-time message streams to the UI and process manual takeover commands, so that operators can step into conversations.",
+          "acceptanceCriteria": "Given an active connection, When a new message arrives, Then commit the Live Chat WebSocket controller Java class files that broadcast the event.\nGiven an operator sends a manual reply, When the controller processes it, Then it immediately updates the database to block further AI generation.",
+          "leanValue": "essential",
+          "cynefinDomain": "complicated",
+          "tocConstraintRef": "Concurrency handling between AI generation and manual override",
+          "sixSigmaMetric": "Guarantee 0 AI messages are sent after a manual takeover is triggered",
+          "hasUi": false,
+          "requirementRefs": [
+            "R6",
+            "R7",
+            "R8"
+          ]
+        },
+        {
+          "title": "Unified Svelte CRM Dashboard",
+          "roleTag": "BARCAN-TAG-11",
+          "jtbd": "When implementing the CRM interface for this epic, I want to build a unified inbox with manual chat controls, so that operators can monitor and intervene effectively.",
+          "acceptanceCriteria": "Given the unified inbox, When multiple accounts receive messages, Then commit the Svelte inbox UI component files that aggregate messages with visual status tags.\nGiven an AI-active conversation, When the operator types and sends a message, Then the UI immediately reflects the conversation status change to Human controlled.",
+          "leanValue": "essential",
+          "cynefinDomain": "complicated",
+          "tocConstraintRef": "Frontend rendering performance with numerous live chat streams",
+          "sixSigmaMetric": "Maintain 60 FPS while receiving 50 concurrent incoming messages",
+          "hasUi": true,
+          "requirementRefs": [
+            "R3",
+            "R6",
+            "R7",
+            "R8"
+          ]
+        }
+      ]
+    }
+  ]
+}
