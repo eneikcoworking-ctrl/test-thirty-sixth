@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OpsCommand | Pool Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #051424; /* surface-dim */
+            color: #d4e4fa; /* on-surface */
+            font-family: 'Inter', sans-serif;
+        }
+        .pool-card-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #122131 100%);
+        }
+        /* Custom scrollbar for high-density tables */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #051424; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #424754; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#0d1c2d",
+                        "on-secondary-fixed": "#111c2d",
+                        "surface-container-lowest": "#010f1f",
+                        "primary-fixed-dim": "#adc6ff",
+                        "tertiary": "#bec6e0",
+                        "on-surface": "#d4e4fa",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "tertiary-container": "#8990a8",
+                        "on-tertiary": "#283044",
+                        "on-primary-fixed": "#001a42",
+                        "primary-fixed": "#d8e2ff",
+                        "on-tertiary-fixed-variant": "#3f465c",
+                        "surface-dim": "#051424",
+                        "surface-variant": "#273647",
+                        "inverse-primary": "#005ac2",
+                        "secondary": "#bcc7de",
+                        "on-error-container": "#ffdad6",
+                        "surface-bright": "#2c3a4c",
+                        "primary": "#adc6ff",
+                        "background": "#051424",
+                        "error": "#ffb4ab",
+                        "outline-variant": "#424754",
+                        "on-tertiary-container": "#22293d",
+                        "tertiary-fixed": "#dae2fd",
+                        "inverse-on-surface": "#233143",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#131b2e",
+                        "primary-container": "#4d8eff",
+                        "inverse-surface": "#d4e4fa",
+                        "surface": "#051424",
+                        "surface-container-high": "#1c2b3c",
+                        "outline": "#8c909f",
+                        "secondary-fixed": "#d8e3fb",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "on-secondary-container": "#aeb9d0",
+                        "surface-container-highest": "#273647",
+                        "on-primary-container": "#00285d",
+                        "on-surface-variant": "#c2c6d6",
+                        "secondary-container": "#3e495d",
+                        "surface-container": "#122131",
+                        "on-primary": "#002e6a",
+                        "error-container": "#93000a",
+                        "tertiary-fixed-dim": "#bec6e0",
+                        "on-primary-fixed-variant": "#004395",
+                        "surface-tint": "#adc6ff",
+                        "on-background": "#d4e4fa",
+                        "on-secondary": "#263143"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "sm": "8px",
+                        "margin-mobile": "16px",
+                        "xl": "40px",
+                        "margin-desktop": "32px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "data-lg-mobile": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "label-caps": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "data-lg-mobile": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "data-mono": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky flex justify-between items-center px-margin-mobile h-16 w-full z-50 bg-surface-dim border-b border-outline-variant transition-colors duration-200">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional operator profile picture in a dark, high-tech command center environment. The operator has a neutral, focused expression, wearing a sleek dark uniform with subtle blue glowing circuitry patterns. The lighting is low-key, with cool blue highlights reflecting off polished metallic surfaces in the background, creating a mood of serious technical authority." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD0fYXZlZQFIrplhxop4PFvpmzjEy0dhP8t0tV1z5dTk7k7J0PIp20uHnJeB4GGP1fe2VHlmPFTkHFBIEUClySIA682Num90PALKOr4ezac07oFHBdJb_j8QgIh5dldrv_zChY5rrzE1yLq25aMW_8pHMUxgtz1dVLmMQXlmOmAptTv8_C29oNWH-ECGG4dLBW4_ZnkRXi8bICvGQHlB1hspGrj9UlRHTEAKc-JBhBZ71X2reCT2SAgVLeU9kI-VdaGvIEZUYHwQkF"/>
+</div>
+<span class="font-headline-md text-headline-md font-bold text-primary">OpsCommand</span>
+</div>
+<div class="flex items-center gap-sm">
+<button class="material-symbols-outlined text-primary hover:bg-surface-variant p-sm rounded-lg transition-colors active:opacity-80">add_circle</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant p-sm rounded-lg transition-colors active:opacity-80">notifications</button>
+</div>
+</header>
+<main class="flex-grow p-margin-mobile md:p-margin-desktop mb-16">
+<!-- Summary Header -->
+<section class="flex flex-col md:flex-row justify-between items-start md:items-center mb-lg gap-md">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-xs">Pool Management</h1>
+<p class="font-body-md text-on-surface-variant">Real-time status of sender clusters and active sessions.</p>
+</div>
+<button class="bg-primary text-on-primary font-label-caps text-label-caps py-sm px-lg rounded flex items-center gap-xs hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                ADD SESSION
+            </button>
+</section>
+<!-- Metrics Overview Bento -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-gutter mb-xl">
+<div class="p-md bg-surface-container-low border border-outline-variant rounded-lg">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-xs">TOTAL POOLS</p>
+<p class="font-headline-md text-headline-md text-primary">24</p>
+</div>
+<div class="p-md bg-surface-container-low border border-outline-variant rounded-lg">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-xs">ACTIVE SESSIONS</p>
+<p class="font-headline-md text-headline-md text-primary">1,402</p>
+</div>
+<div class="p-md bg-surface-container-low border border-outline-variant rounded-lg">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-xs">THROUGHPUT</p>
+<p class="font-headline-md text-headline-md text-primary">82k/s</p>
+</div>
+<div class="p-md bg-surface-container-low border border-outline-variant rounded-lg">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-xs">ERROR RATE</p>
+<p class="font-headline-md text-headline-md text-error">0.04%</p>
+</div>
+</div>
+<!-- Pool Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Pool Card 1: Online -->
+<div class="pool-card-gradient border border-outline-variant rounded-xl p-md flex flex-col gap-md hover:border-primary transition-colors group">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">POOL_US_EAST_01</h3>
+<div class="inline-flex items-center gap-xs px-sm py-[2px] bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="text-[10px] font-bold text-emerald-500 tracking-wider">ONLINE</span>
+</div>
+</div>
+<div class="relative group/menu">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">more_vert</button>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-sm py-sm border-y border-outline-variant/30">
+<div>
+<p class="font-label-caps text-[10px] text-outline mb-1">SESSIONS</p>
+<p class="font-data-mono text-data-mono text-on-surface">412 / 500</p>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-outline mb-1">THROUGHPUT</p>
+<p class="font-data-mono text-data-mono text-on-surface">12.4k req/s</p>
+</div>
+</div>
+<div class="w-full bg-surface-dim h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[82%]"></div>
+</div>
+<div class="flex gap-sm mt-auto">
+<button class="flex-1 font-label-caps text-[11px] py-2 border border-outline-variant hover:border-error hover:text-error transition-colors rounded">DRAIN</button>
+<button class="flex-1 font-label-caps text-[11px] py-2 border border-outline-variant hover:border-primary hover:text-primary transition-colors rounded">RESTART</button>
+</div>
+</div>
+<!-- Pool Card 2: Draining -->
+<div class="pool-card-gradient border border-outline-variant rounded-xl p-md flex flex-col gap-md hover:border-primary transition-colors group">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">POOL_EU_WEST_04</h3>
+<div class="inline-flex items-center gap-xs px-sm py-[2px] bg-amber-500/10 border border-amber-500/20 rounded-full">
+<span class="w-2 h-2 rounded-full bg-amber-500"></span>
+<span class="text-[10px] font-bold text-amber-500 tracking-wider">DRAINING</span>
+</div>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant">more_vert</button>
+</div>
+<div class="grid grid-cols-2 gap-sm py-sm border-y border-outline-variant/30">
+<div>
+<p class="font-label-caps text-[10px] text-outline mb-1">SESSIONS</p>
+<p class="font-data-mono text-data-mono text-on-surface">12 active</p>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-outline mb-1">THROUGHPUT</p>
+<p class="font-data-mono text-data-mono text-on-surface">0.2k req/s</p>
+</div>
+</div>
+<div class="w-full bg-surface-dim h-1 rounded-full overflow-hidden">
+<div class="bg-amber-500 h-full w-[15%] transition-all duration-1000"></div>
+</div>
+<div class="flex gap-sm mt-auto">
+<button class="flex-1 font-label-caps text-[11px] py-2 bg-error/20 text-error border border-error/30 rounded">ABORT DRAIN</button>
+<button class="flex-1 font-label-caps text-[11px] py-2 border border-outline-variant opacity-50 cursor-not-allowed rounded">RESTART</button>
+</div>
+</div>
+<!-- Pool Card 3: Offline -->
+<div class="pool-card-gradient border border-outline-variant rounded-xl p-md flex flex-col gap-md hover:border-primary transition-colors group opacity-80">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">POOL_AP_SOUTHEAST_02</h3>
+<div class="inline-flex items-center gap-xs px-sm py-[2px] bg-outline-variant/50 border border-outline rounded-full">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span class="text-[10px] font-bold text-outline tracking-wider">OFFLINE</span>
+</div>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant">more_vert</button>
+</div>
+<div class="grid grid-cols-2 gap-sm py-sm border-y border-outline-variant/30">
+<div>
+<p class="font-label-caps text-[10px] text-outline mb-1">SESSIONS</p>
+<p class="font-data-mono text-data-mono text-on-surface">0</p>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-outline mb-1">THROUGHPUT</p>
+<p class="font-data-mono text-data-mono text-on-surface">0 req/s</p>
+</div>
+</div>
+<div class="w-full bg-surface-dim h-1 rounded-full overflow-hidden">
+<div class="bg-outline h-full w-0"></div>
+</div>
+<div class="flex gap-sm mt-auto">
+<button class="flex-1 font-label-caps text-[11px] py-2 border border-outline-variant opacity-30 cursor-not-allowed rounded">DRAIN</button>
+<button class="flex-1 font-label-caps text-[11px] py-2 bg-primary text-on-primary rounded">BRING ONLINE</button>
+</div>
+</div>
+<!-- Pool Card 4: Online -->
+<div class="pool-card-gradient border border-outline-variant rounded-xl p-md flex flex-col gap-md hover:border-primary transition-colors group">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">POOL_GLOBAL_CDN_09</h3>
+<div class="inline-flex items-center gap-xs px-sm py-[2px] bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="text-[10px] font-bold text-emerald-500 tracking-wider">ONLINE</span>
+</div>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant">more_vert</button>
+</div>
+<div class="grid grid-cols-2 gap-sm py-sm border-y border-outline-variant/30">
+<div>
+<p class="font-label-caps text-[10px] text-outline mb-1">SESSIONS</p>
+<p class="font-data-mono text-data-mono text-on-surface">98 / 100</p>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-outline mb-1">THROUGHPUT</p>
+<p class="font-data-mono text-data-mono text-on-surface">42.1k req/s</p>
+</div>
+</div>
+<div class="w-full bg-surface-dim h-1 rounded-full overflow-hidden">
+<div class="bg-error h-full w-[98%]"></div>
+</div>
+<div class="flex gap-sm mt-auto">
+<button class="flex-1 font-label-caps text-[11px] py-2 border border-outline-variant hover:border-error hover:text-error transition-colors rounded">DRAIN</button>
+<button class="flex-1 font-label-caps text-[11px] py-2 border border-outline-variant hover:border-primary hover:text-primary transition-colors rounded">RESTART</button>
+</div>
+</div>
+<!-- Add New Pool Placeholder -->
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-md flex flex-col items-center justify-center gap-md hover:border-primary/50 hover:bg-surface-container-low transition-all cursor-pointer group min-h-[220px]">
+<div class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">add</span>
+</div>
+<p class="font-label-caps text-label-caps text-outline group-hover:text-primary">PROVISION NEW POOL</p>
+</div>
+</div>
+<!-- Detail Table Section (High Density) -->
+<section class="mt-xl">
+<div class="flex justify-between items-center mb-md">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">POOL EVENT LOG</h2>
+<button class="text-primary font-label-caps text-label-caps flex items-center gap-xs hover:underline">
+<span class="material-symbols-outlined text-[16px]">download</span> EXPORT CSV
+                </button>
+</div>
+<div class="bg-surface-container-low border border-outline-variant rounded overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-high">
+<tr>
+<th class="p-sm font-label-caps text-[10px] text-outline uppercase">Timestamp</th>
+<th class="p-sm font-label-caps text-[10px] text-outline uppercase">Pool ID</th>
+<th class="p-sm font-label-caps text-[10px] text-outline uppercase">Action</th>
+<th class="p-sm font-label-caps text-[10px] text-outline uppercase">Operator</th>
+<th class="p-sm font-label-caps text-[10px] text-outline uppercase">Status</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-sm">
+<tr class="border-b border-outline-variant/30 hover:bg-surface-variant transition-colors cursor-default">
+<td class="p-sm font-data-mono text-xs opacity-70">2023-10-27 14:22:01</td>
+<td class="p-sm font-data-mono text-primary">POOL_US_EAST_01</td>
+<td class="p-sm">Session Scaling UP</td>
+<td class="p-sm">SYSTEM_AUTO</td>
+<td class="p-sm"><span class="px-sm py-1 bg-emerald-500/10 text-emerald-500 rounded text-[10px] font-bold">SUCCESS</span></td>
+</tr>
+<tr class="border-b border-outline-variant/30 hover:bg-surface-variant transition-colors cursor-default">
+<td class="p-sm font-data-mono text-xs opacity-70">2023-10-27 14:15:44</td>
+<td class="p-sm font-data-mono text-primary">POOL_EU_WEST_04</td>
+<td class="p-sm">Drain Initiated</td>
+<td class="p-sm">j.smith@ops</td>
+<td class="p-sm"><span class="px-sm py-1 bg-amber-500/10 text-amber-500 rounded text-[10px] font-bold">PENDING</span></td>
+</tr>
+<tr class="border-b border-outline-variant/30 hover:bg-surface-variant transition-colors cursor-default">
+<td class="p-sm font-data-mono text-xs opacity-70">2023-10-27 14:02:11</td>
+<td class="p-sm font-data-mono text-primary">POOL_GLOBAL_CDN_09</td>
+<td class="p-sm">High Load Warning</td>
+<td class="p-sm">SYSTEM_MONITOR</td>
+<td class="p-sm"><span class="px-sm py-1 bg-error/10 text-error rounded text-[10px] font-bold">ALERT</span></td>
+</tr>
+<tr class="hover:bg-surface-variant transition-colors cursor-default">
+<td class="p-sm font-data-mono text-xs opacity-70">2023-10-27 13:45:00</td>
+<td class="p-sm font-data-mono text-primary">POOL_AP_SOUTHEAST_02</td>
+<td class="p-sm">Decommission</td>
+<td class="p-sm">a.lee@admin</td>
+<td class="p-sm"><span class="px-sm py-1 bg-outline-variant text-on-surface-variant rounded text-[10px] font-bold">ARCHIVED</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full h-16 flex justify-around items-center bg-surface-container-low border-t border-outline-variant z-50">
+<!-- Pools (Active) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 transition-transform duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dns</span>
+<span class="font-label-caps text-[10px]">Pools</span>
+</a>
+<!-- Health (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined">monitor_heart</span>
+<span class="font-label-caps text-[10px]">Health</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for the "Add Session" ripple/glow
+        const addBtn = document.querySelector('button.bg-primary');
+        if(addBtn) {
+            addBtn.addEventListener('click', () => {
+                console.log('Action: Initiating New Session provision flow...');
+                // Visual feedback only for demo
+                addBtn.classList.add('ring-2', 'ring-primary-fixed', 'ring-offset-2', 'ring-offset-surface-dim');
+                setTimeout(() => addBtn.classList.remove('ring-2', 'ring-primary-fixed', 'ring-offset-2', 'ring-offset-surface-dim'), 500);
+            });
+        }
+
+        // Simulating real-time throughput changes
+        setInterval(() => {
+            const metrics = document.querySelectorAll('.font-data-mono');
+            metrics.forEach(m => {
+                if(m.innerText.includes('k req/s')) {
+                    const currentVal = parseFloat(m.innerText);
+                    const change = (Math.random() - 0.5) * 0.5;
+                    m.innerText = (currentVal + change).toFixed(1) + 'k req/s';
+                }
+            });
+        }, 3000);
+    </script>
+</body></html>
