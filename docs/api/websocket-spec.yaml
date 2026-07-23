@@ -1,0 +1,117 @@
+asyncapi: 3.0.0
+info:
+  title: CRM Inbox WebSocket Protocol - LeadGen Bot
+  version: 1.0.0
+  description: |
+    Real-time push channel specification for the LeadGen Bot CRM Dashboard.
+    Enables instant UI updates for incoming messages, outbound AI replies, manual messages,
+    and status updates such as AI activation/hijack changes.
+servers:
+  dev:
+    host: localhost:8080
+    pathname: /ws/crm
+    protocol: ws
+    description: Development WebSocket server endpoint
+channels:
+  crmEvents:
+    address: /ws/crm
+    messages:
+      messageReceived:
+        $ref: '#/components/messages/MessageReceived'
+      dialogStatusChanged:
+        $ref: '#/components/messages/DialogStatusChanged'
+operations:
+  subscribeCrmEvents:
+    action: receive
+    channel:
+      $ref: '#/channels/crmEvents'
+    messages:
+      - $ref: '#/components/messages/MessageReceived'
+      - $ref: '#/components/messages/DialogStatusChanged'
+components:
+  messages:
+    MessageReceived:
+      name: MessageReceived
+      title: Real-time Message Received Event
+      summary: Dispatched to client UI when any new message is written to the database (sent or received).
+      payload:
+        type: object
+        required:
+          - eventType
+          - data
+        properties:
+          eventType:
+            type: string
+            const: MESSAGE_RECEIVED
+          data:
+            type: object
+            required:
+              - id
+              - dialogId
+              - text
+              - senderType
+              - sentAt
+            properties:
+              id:
+                type: integer
+                format: int64
+                description: Primary key from the messages table
+              dialogId:
+                type: integer
+                format: int64
+                description: The corresponding dialog ID
+              text:
+                type: string
+                description: Content of the message
+              senderType:
+                type: string
+                enum: [AI, HUMAN, LEAD]
+                description: Sender type identifier
+              sentAt:
+                type: string
+                format: date-time
+                description: Timestamp of when the message was sent or received
+    DialogStatusChanged:
+      name: DialogStatusChanged
+      title: Real-time Dialog Status Update Event
+      summary: Dispatched to client UI when dialog metadata changes, e.g., AI activation state or manual takeover.
+      payload:
+        type: object
+        required:
+          - eventType
+          - data
+        properties:
+          eventType:
+            type: string
+            const: DIALOG_STATUS_CHANGED
+          data:
+            type: object
+            required:
+              - id
+              - telegramChatId
+              - isAiActive
+              - updatedAt
+            properties:
+              id:
+                type: integer
+                format: int64
+                description: Primary key of the dialog
+              telegramChatId:
+                type: integer
+                format: int64
+                description: The Telegram chat id with the lead
+              leadUsername:
+                type: string
+                nullable: true
+                description: Telegram @username of the lead
+              leadPhone:
+                type: string
+                nullable: true
+                description: Phone number of the lead
+              isAiActive:
+                type: boolean
+                description: Whether AI is active (true) or human operator takeover is active (false)
+              updatedAt:
+                type: string
+                format: date-time
+                description: Timestamp when the state change occurred

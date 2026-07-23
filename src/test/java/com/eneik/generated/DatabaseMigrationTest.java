@@ -18,6 +18,10 @@ public class DatabaseMigrationTest {
 
     @Test
     public void testDatabaseMigrationSuccessful() {
+        // Clean up tables to make test idempotent
+        jdbcTemplate.execute("DELETE FROM messages");
+        jdbcTemplate.execute("DELETE FROM dialogs");
+
         // Test that tables were created successfully and are queryable
         assertDoesNotThrow(() -> {
             jdbcTemplate.execute("SELECT * FROM dialogs");
