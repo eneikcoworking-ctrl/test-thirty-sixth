@@ -2,22 +2,10 @@
   "verdicts": [
     {
       "sourceIndex": 0,
-      "verdict": "approve",
-      "criticalReason": "",
+      "verdict": "block",
+      "criticalReason": "The PR committed multiple files inside the forbidden `.eneik/` directory (e.g., `.eneik/records/review-verdict-*.json` and `.eneik/review-verdict.json`). This violates the explicit PR Boundaries, which state: 'Never create, write, modify, or commit anything under a path starting with .eneik/ ... Committing anything under .eneik/ will cause your PR to be rejected by review even if the rest of your work is correct.'",
       "concerns": [
-        "The Python spike script runs an interactive login flow, which cannot be executed automatically in CI environments without mock inputs.",
-        "The Pyrogram client is initialized with in_memory=True, meaning it will not persist the session state to disk, which limits testing of actual session re-use.",
-        "No dependency file (e.g., requirements.txt) was added to specify required library versions for the script."
-      ]
-    },
-    {
-      "sourceIndex": 1,
-      "verdict": "approve",
-      "criticalReason": "",
-      "concerns": [
-        "The WebSocket API specification uses AsyncAPI version 3.0.0, which might have limited compatibility with some standard toolchains.",
-        "The openapi.yaml specification does not define security or authentication schemes (e.g., Bearer auth or cookies) for endpoints, which are essential for security.",
-        "DatabaseMigrationTest.java executes DELETE statements directly on the tables to clean them up, which could fail if the tables do not exist yet or have integrity constraint violations."
+        "The Flyway migration scripts (U1__... and V1__...) were renamed to U2__... and V2__..., which may break existing schema tracking if version 1 migrations were already applied."
       ]
     }
   ]
