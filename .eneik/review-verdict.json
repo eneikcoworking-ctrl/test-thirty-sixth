@@ -1,18 +1,11 @@
-{
-  "verdicts": [
-    {
-      "sourceIndex": 0,
-      "verdict": "approve",
-      "criticalReason": "",
-      "concerns": []
-    },
-    {
-      "sourceIndex": 1,
-      "verdict": "approve",
-      "criticalReason": "",
-      "concerns": [
-        "The PR only includes raw SQL migrations and database-level JDBC testing, but lacks any high-level Java JPA @Entity definitions (e.g. Dialog.java, Message.java) to integrate with Spring Data JPA."
-      ]
-    }
-  ]
-}
+{"verdicts": [
+  {
+    "sourceIndex": 0,
+    "verdict": "approve",
+    "criticalReason": "",
+    "concerns": [
+      "No security endpoints are specified in the API contract yet, although Telegram TDLib accounts and proxies will need authentication/authorization.",
+      "Consider separating the upload error schema into individual reusable components for cleaner schema design."
+    ]
+  }
+]}
