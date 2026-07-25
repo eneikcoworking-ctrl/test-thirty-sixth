@@ -1,0 +1,12 @@
+{
+  "verdicts": [
+    {
+      "sourceIndex": 0,
+      "verdict": "block",
+      "criticalReason": "The PR committed multiple files inside the forbidden `.eneik/` directory (e.g., `.eneik/records/review-verdict-*.json` and `.eneik/review-verdict.json`). This violates the explicit PR Boundaries, which state: 'Never create, write, modify, or commit anything under a path starting with .eneik/ ... Committing anything under .eneik/ will cause your PR to be rejected by review even if the rest of your work is correct.'",
+      "concerns": [
+        "The Flyway migration scripts (U1__... and V1__...) were renamed to U2__... and V2__..., which may break existing schema tracking if version 1 migrations were already applied."
+      ]
+    }
+  ]
+}
