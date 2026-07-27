@@ -1,0 +1,70 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{svelte,js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        "surface-container-high": "#e1e8ff",
+        "on-secondary": "#ffffff",
+        "secondary": "#00687b",
+        "on-primary-fixed-variant": "#0040a2",
+        "error-container": "#ffdad6",
+        "inverse-primary": "#b2c5ff",
+        "outline": "#737685",
+        "surface-container-low": "#f1f3ff",
+        "on-error": "#ffffff",
+        "secondary-fixed-dim": "#48d7f9",
+        "tertiary-fixed-dim": "#c9bfff",
+        "on-background": "#051a3e",
+        "inverse-surface": "#1d3054",
+        "primary-container": "#0052cc",
+        "error": "#ba1a1a",
+        "on-tertiary-container": "#d5ccff",
+        "tertiary-container": "#5b49b5",
+        "surface-dim": "#ccdaff",
+        "on-surface-variant": "#434654",
+        "surface-container-highest": "#d8e2ff",
+        "surface-tint": "#0c56d0",
+        "primary-fixed": "#dae2ff",
+        "secondary-container": "#50dcff",
+        "on-primary": "#ffffff",
+        "tertiary": "#432f9c",
+        "secondary-fixed": "#afecff",
+        "on-secondary-fixed-variant": "#004e5d",
+        "surface-bright": "#faf9ff",
+        "background": "#faf9ff",
+        "tertiary-fixed": "#e5deff",
+        "surface-container": "#e9edff",
+        "outline-variant": "#c3c6d6",
+        "surface": "#faf9ff",
+        "on-surface": "#051a3e",
+        "on-error-container": "#93000a",
+        "on-primary-fixed": "#001848",
+        "surface-container-lowest": "#ffffff",
+        "inverse-on-surface": "#edf0ff",
+        "on-secondary-container": "#005f71",
+        "primary": "#003d9b",
+        "on-secondary-fixed": "#001f27",
+        "on-tertiary-fixed": "#1a0063",
+        "on-tertiary": "#ffffff",
+        "on-tertiary-fixed-variant": "#4633a0",
+        "primary-fixed-dim": "#b2c5ff",
+        "surface-variant": "#d8e2ff",
+        "on-primary-container": "#c4d2ff"
+      },
+      borderRadius: {
+        "DEFAULT": "0.125rem",
+        "lg": "0.25rem",
+        "xl": "0.5rem",
+        "full": "0.75rem"
+      },
+      fontFamily: {
+        "sans": ["Hanken Grotesk", "Geist", "Inter", "sans-serif"]
+      }
+    },
+  },
+  plugins: [],
+}
